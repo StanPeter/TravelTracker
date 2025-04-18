@@ -1,0 +1,24 @@
+﻿# Build results
+bin/
+obj/
+.vs/
+
+# User-specific files
+*.user
+*.suo
+*.db
+*.db-shm
+*.db-wal
+
+# ASP.NET config
+appsettings.Development.json
+
+# VS Code / Rider
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# wwwroot/lib
+wwwroot/lib

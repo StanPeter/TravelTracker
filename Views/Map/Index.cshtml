@@ -1,0 +1,56 @@
+﻿@model List<TravelTracker.Models.TripPlace>
+
+@{
+    ViewData["Title"] = "Map View";
+}
+
+<h2>Visited Places Map</h2>
+
+<div id="map" style="height: 400px; width: 100%; margin-bottom: 2rem;"></div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Place</th>
+            <th>Country</th>
+            <th>User</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trip in Model)
+        {
+            <tr>
+                <td>@trip.Name</td>
+                <td>@trip.User.UserName</td>
+                <td>@trip.Latitude</td>
+                <td>@trip.Longitude</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- 🔌 Load Google Maps API -->
+<script async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initMap">
+</script>
+
+<script>
+    function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 2,
+            center: { lat: 20, lng: 0 },
+        });
+        var tripPlaces = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+        tripPlaces.forEach(place => {
+            new google.maps.Marker({
+                position: { lat: parseFloat(place.latitude), lng: parseFloat(place.longitude) },
+                map,
+                title: place.name + " - " + place.country
+            });
+        });
+    }
+</script>
