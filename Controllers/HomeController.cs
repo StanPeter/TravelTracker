@@ -13,8 +13,16 @@ namespace TravelTracker.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string mode = "login")
         {
+            if (mode == "register")
+            {
+                ViewData["mode"] = "register";
+            } else
+            {
+                ViewData["mode"] = "login";
+            }
+
             return View();
         }
 

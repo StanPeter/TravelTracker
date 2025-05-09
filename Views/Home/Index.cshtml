@@ -1,8 +1,28 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome";
+    var mode = ViewData["mode"]?.ToString();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <h1>Welcome to TravelTracker</h1>
+
+    <div class="mb-3">
+        <a href="@Url.Action("Index", new { mode = "login" })" class="btn btn-outline-primary me-2">Login</a>
+        <a href="@Url.Action("Index", new { mode = "register" })" class="btn btn-outline-success">Register</a>
+    </div>
+
+    <div>
+        @if (mode == "register")
+        {
+            @await Html.PartialAsync("_RegisterPartial", new TravelTracker.Models.DTOs.RegisterDto())
+        }
+        else
+        {
+            @await Html.PartialAsync("_LoginPartial", new TravelTracker.Models.DTOs.LoginDto())
+        }
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
