@@ -10,11 +10,13 @@ namespace TravelTracker.Models
 
         [Required]
         public string Name { get; set; } = null!;
+
         [Required]
         public double Latitude { get; set; }
-        [Required]
 
+        [Required]
         public double Longitude { get; set; }
+
         public string? Description { get; set; }
 
         [ForeignKey("User")]
