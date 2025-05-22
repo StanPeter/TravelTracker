@@ -12,6 +12,11 @@
     </div>
 
     <div>
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
         @if (mode == "register")
         {
             @await Html.PartialAsync("_RegisterPartial", new TravelTracker.Models.DTOs.RegisterDto())

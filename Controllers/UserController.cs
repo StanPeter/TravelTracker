@@ -26,7 +26,8 @@ namespace TravelTracker.Controllers
 
             if (foundUser == null)
             {
-                return StatusCode(500, "User does not exist.");
+                TempData["Error"] = "User not found";
+                return RedirectToAction("Index", "Home", new { mode = "login" });
             }
 
             var hasher = new PasswordHasher<object>();
@@ -35,9 +36,11 @@ namespace TravelTracker.Controllers
 
             if (passwordsMatchResult == PasswordVerificationResult.Failed)
             {
-                return StatusCode(500, "Authentication failed.");
+                TempData["Error"] = "Authentication failed.";
+                return RedirectToAction("Index", "Home", new { mode = "login" });
             }
 
+            TempData["Success"] = "Logged in successfuly.";
             return RedirectToAction("Index", "Map");
         }
 
@@ -50,12 +53,14 @@ namespace TravelTracker.Controllers
 
             if (foundUser != null)
             {
-                return BadRequest(new {error = "User already exists" });
+                TempData["Error"] = "User already exists";
+                return RedirectToAction("Index", "Home", new { mode = "register" });
             }
 
             if (registerDto.Password != registerDto.RepeatPassword)
             {
-                return BadRequest(new { error = "Passwords don't match"});
+                TempData["Error"] = "Passwords don't match";
+                return RedirectToAction("Index", "Home", new { mode = "register" });
             }
 
             var hasher = new PasswordHasher<object>();
@@ -70,6 +75,7 @@ namespace TravelTracker.Controllers
             await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = "Registered successfuly.";
             return RedirectToAction("Index", "Map");
         }
     }

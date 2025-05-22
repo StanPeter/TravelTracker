@@ -4,6 +4,11 @@
     ViewData["Title"] = "Map View";
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
 <h2>Visited Places Map</h2>
 
 <div id="map" style="height: 400px; width: 100%; margin-bottom: 2rem;"></div>
