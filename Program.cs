@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TravelTracker.Data;
 using TravelTracker.Services;
@@ -10,7 +11,22 @@ builder.Services.AddAuthentication("MyAuthCookie")
     {
         options.LoginPath = "/Home/Index";
         options.AccessDeniedPath = "/Home/Index";
+        options.ExpireTimeSpan= TimeSpan.FromSeconds(15);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        //options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // forces HTTPS only
+
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnRedirectToLogin = context =>
+            {
+                context.Response.Redirect("Home/Index?expired=true");
+                return Task.CompletedTask;
+            }
+        };
     });
+
+builder.Services.AddAuthorization();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

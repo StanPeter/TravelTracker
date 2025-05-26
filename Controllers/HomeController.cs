@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TravelTracker.Models;
 
@@ -13,7 +13,7 @@ namespace TravelTracker.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(string mode = "login")
+        public IActionResult Index(string mode = "login", string? expired = null)
         {
             if (mode == "register")
             {
@@ -22,6 +22,9 @@ namespace TravelTracker.Controllers
             {
                 ViewData["mode"] = "login";
             }
+
+            if (expired != null)
+                TempData["Error"] = "You were logged out due to inactivity.";
 
             return View();
         }
