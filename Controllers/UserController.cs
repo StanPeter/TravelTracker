@@ -7,16 +7,19 @@ using TravelTracker.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using TravelTracker.Services;
 
 namespace TravelTracker.Controllers
 {
     public class UserController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly AuthService _authService;
         
-        public UserController(AppDbContext context)
+        public UserController(AppDbContext context, AuthService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
         public IActionResult Login() => View();
@@ -42,17 +45,7 @@ namespace TravelTracker.Controllers
                 return RedirectToAction("Index", "Home", new { mode = "login" });
             }
 
-            // key pairs for authentication to attach cookie
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, foundUser.Id.ToString()),
-                new Claim(ClaimTypes.Name, foundUser.Email)
-            };
-
-            var identity = new ClaimsIdentity(claims, "MyAuthCookie");
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync("MyAuthCookie", principal);
+            await _authService.SignInUserAsync(foundUser);
 
             TempData["Success"] = "Logged in successfuly.";
             return RedirectToAction("Index", "Map");
@@ -80,16 +73,16 @@ namespace TravelTracker.Controllers
             var hasher = new PasswordHasher<object>();
             string hashedPassword = hasher.HashPassword(null, registerDto.Password);
 
-            //var newUser = new User
-            //{
-            //    Email = registerDto.Email,
-            //    PasswordHash = hashedPassword
-            //};
+            var newUser = new User
+            {
+                Email = registerDto.Email,
+                PasswordHash = hashedPassword
+            };
 
-            //await _context.Users.AddAsync(newUser);
-            //await _context.SaveChangesAsync();
+            await _context.Users.AddAsync(newUser);
+            await _context.SaveChangesAsync();
 
-            
+            await _authService.SignInUserAsync(newUser);
 
             TempData["Success"] = "Registered successfuly.";
             return RedirectToAction("Index", "Map");

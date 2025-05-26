@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using TravelTracker.Data;
+using TravelTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add authentication using authentication package
+// Add authentication middleware using authentication package
 builder.Services.AddAuthentication("MyAuthCookie")
     .AddCookie("MyAuthCookie", options =>
     {
@@ -15,6 +16,9 @@ builder.Services.AddAuthentication("MyAuthCookie")
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=traveltracker.db"));
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
