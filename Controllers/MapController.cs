@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TravelTracker.Data;
 using TravelTracker.Models;
 
 namespace TravelTracker.Controllers
 {
+    [Authorize]
     public class MapController: Controller
     {
         private readonly AppDbContext _context;

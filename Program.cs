@@ -3,6 +3,14 @@ using TravelTracker.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add authentication using authentication package
+builder.Services.AddAuthentication("MyAuthCookie")
+    .AddCookie("MyAuthCookie", options =>
+    {
+        options.LoginPath = "/Home/Index";
+        options.AccessDeniedPath = "/Home/Index";
+    });
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -23,6 +31,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

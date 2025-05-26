@@ -5,6 +5,8 @@ using TravelTracker.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using TravelTracker.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace TravelTracker.Controllers
 {
@@ -40,6 +42,18 @@ namespace TravelTracker.Controllers
                 return RedirectToAction("Index", "Home", new { mode = "login" });
             }
 
+            // key pairs for authentication to attach cookie
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, foundUser.Id.ToString()),
+                new Claim(ClaimTypes.Name, foundUser.Email)
+            };
+
+            var identity = new ClaimsIdentity(claims, "MyAuthCookie");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync("MyAuthCookie", principal);
+
             TempData["Success"] = "Logged in successfuly.";
             return RedirectToAction("Index", "Map");
         }
@@ -66,14 +80,16 @@ namespace TravelTracker.Controllers
             var hasher = new PasswordHasher<object>();
             string hashedPassword = hasher.HashPassword(null, registerDto.Password);
 
-            var newUser = new User
-            {
-                Email = registerDto.Email,
-                PasswordHash = hashedPassword
-            };
+            //var newUser = new User
+            //{
+            //    Email = registerDto.Email,
+            //    PasswordHash = hashedPassword
+            //};
 
-            await _context.Users.AddAsync(newUser);
-            await _context.SaveChangesAsync();
+            //await _context.Users.AddAsync(newUser);
+            //await _context.SaveChangesAsync();
+
+            
 
             TempData["Success"] = "Registered successfuly.";
             return RedirectToAction("Index", "Map");
