@@ -25,6 +25,7 @@ namespace TravelTracker.Controllers
         public IActionResult Login() => View();
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             var foundUser = await _context.Users.FirstOrDefaultAsync(user => user.Email == loginDto.Email);
@@ -54,6 +55,7 @@ namespace TravelTracker.Controllers
         public IActionResult Register() => View();
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             var foundUser = await _context.Users.FirstOrDefaultAsync(user => user.Email == registerDto.Email);
