@@ -30,9 +30,15 @@ namespace TravelTracker.Controllers
         {
             var foundUser = await _context.Users.FirstOrDefaultAsync(user => user.Email == loginDto.Email);
 
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Please fix the form errors.";
+                return RedirectToAction("Index", "Home", new { mode = "login" });
+            }
+
             if (foundUser == null)
             {
-                TempData["Error"] = "User not found";
+                TempData["Error"] = "User not found.";
                 return RedirectToAction("Index", "Home", new { mode = "login" });
             }
 
@@ -60,17 +66,23 @@ namespace TravelTracker.Controllers
         {
             var foundUser = await _context.Users.FirstOrDefaultAsync(user => user.Email == registerDto.Email);
 
-            if (foundUser != null)
+            if (!ModelState.IsValid)
             {
-                TempData["Error"] = "User already exists";
+                TempData["Error"] = "Please fix the form errors.";
                 return RedirectToAction("Index", "Home", new { mode = "register" });
             }
 
-            if (registerDto.Password != registerDto.RepeatPassword)
+            if (foundUser != null)
             {
-                TempData["Error"] = "Passwords don't match";
+                TempData["Error"] = "User already exists.";
                 return RedirectToAction("Index", "Home", new { mode = "register" });
             }
+
+            //if (registerDto.Password != registerDto.RepeatPassword)
+            //{
+            //    TempData["Error"] = "Passwords don't match.";
+            //    return RedirectToAction("Index", "Home", new { mode = "register" });
+            //}
 
             var hasher = new PasswordHasher<object>();
             string hashedPassword = hasher.HashPassword(null, registerDto.Password);
