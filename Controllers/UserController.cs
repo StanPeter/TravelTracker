@@ -33,13 +33,15 @@ namespace TravelTracker.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please fix the form errors.";
-                return RedirectToAction("Index", "Home", new { mode = "login" });
+                ViewData["mode"] = "login";
+                return View("/Views/Home/Index.cshtml", loginDto);
             }
 
             if (foundUser == null)
             {
-                TempData["Error"] = "User not found.";
-                return RedirectToAction("Index", "Home", new { mode = "login" });
+                TempData["Error"] = "Authentication failed. Please check your password and username.";
+                ViewData["mode"] = "login";
+                return View("/Views/Home/Index.cshtml", loginDto);
             }
 
             var hasher = new PasswordHasher<object>();
@@ -48,8 +50,9 @@ namespace TravelTracker.Controllers
 
             if (passwordsMatchResult == PasswordVerificationResult.Failed)
             {
-                TempData["Error"] = "Authentication failed.";
-                return RedirectToAction("Index", "Home", new { mode = "login" });
+                TempData["Error"] = "Authentication failed. Please check your password and username.";
+                ViewData["mode"] = "login";
+                return View("/Views/Home/Index.cshtml", loginDto);
             }
 
             await _authService.SignInUserAsync(foundUser);
@@ -69,20 +72,16 @@ namespace TravelTracker.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please fix the form errors.";
-                return RedirectToAction("Index", "Home", new { mode = "register" });
+                ViewData["mode"] = "register";
+                return View("/Views/Home/Index.cshtml", registerDto);
             }
 
             if (foundUser != null)
             {
                 TempData["Error"] = "User already exists.";
-                return RedirectToAction("Index", "Home", new { mode = "register" });
+                ViewData["mode"] = "register";
+                return View("/Views/Home/Index.cshtml", registerDto);
             }
-
-            //if (registerDto.Password != registerDto.RepeatPassword)
-            //{
-            //    TempData["Error"] = "Passwords don't match.";
-            //    return RedirectToAction("Index", "Home", new { mode = "register" });
-            //}
 
             var hasher = new PasswordHasher<object>();
             string hashedPassword = hasher.HashPassword(null, registerDto.Password);

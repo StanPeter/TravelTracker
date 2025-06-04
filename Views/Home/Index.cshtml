@@ -19,11 +19,11 @@
 
         @if (mode == "register")
         {
-            @await Html.PartialAsync("_RegisterPartial", new TravelTracker.Models.DTOs.RegisterDto())
+            @await Html.PartialAsync("_RegisterPartial", Model as TravelTracker.Models.DTOs.RegisterDto ?? new TravelTracker.Models.DTOs.RegisterDto())
         }
         else
         {
-            @await Html.PartialAsync("_LoginPartial", new TravelTracker.Models.DTOs.LoginDto())
+            @await Html.PartialAsync("_LoginPartial", Model as TravelTracker.Models.DTOs.LoginDto ?? new TravelTracker.Models.DTOs.LoginDto())
         }
     </div>
 </div>
