@@ -11,7 +11,7 @@ builder.Services.AddAuthentication("MyAuthCookie")
     {
         options.LoginPath = "/Home/Index";
         options.AccessDeniedPath = "/Home/Index";
-        options.ExpireTimeSpan= TimeSpan.FromSeconds(15);
+        options.ExpireTimeSpan= TimeSpan.FromMinutes(60);
         options.SlidingExpiration = true;
         options.Cookie.HttpOnly = true;
         //options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // forces HTTPS only
